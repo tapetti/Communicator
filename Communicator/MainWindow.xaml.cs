@@ -32,7 +32,9 @@ namespace Communicator
             InitializeComponent();
 
             LoadSettings();
-
+            Terminal.FontSize = terminalFontSize;
+            if (terminalFontBold) { Terminal.FontWeight = FontWeights.Bold; } else { Terminal.FontWeight = FontWeights.Normal; }            
+            ThemeManager.Current.ChangeTheme(this, themeMode + "." + themeColor);
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
@@ -45,12 +47,29 @@ namespace Communicator
 
         private void LoadSettings()
         {
-            themeMode = "Light";
-            themeColor = "Green";
-            Terminal_Color_PC = Colors.Red;
-            Terminal_Color_Rec = Colors.Blue;
-            ThemeManager.Current.ChangeTheme(this, themeMode + "." + themeColor);
+            DataGeneralSettings settings = new DataGeneralSettings();
+            XmlManager reader = new XmlManager();
 
+            settings = reader.XmlDataSettingsReader(AppDomain.CurrentDomain.BaseDirectory + @"\Configuration\AppSettings.xml");
+
+            try
+            {
+                themeMode = settings.themeMode;
+                themeColor = settings.themeColor;
+                Terminal_Color_PC = settings.Terminal_Color_PC;
+                Terminal_Color_Rec = settings.Terminal_Color_Rec;
+                terminalFontSize = settings.terminalFontSize;
+                terminalFontBold = settings.terminalFontBold;
+            }
+            catch
+            {
+                themeMode = "Light";
+                themeColor = "Green";
+                Terminal_Color_PC = Colors.Red;
+                Terminal_Color_Rec = Colors.Blue;
+                terminalFontSize = 8;
+                terminalFontBold = false;
+            }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

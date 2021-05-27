@@ -17,5 +17,6 @@ namespace Communicator
         public string themeMode;
         public string themeColor;
         public float terminalFontSize;
+        public bool terminalFontBold;
     }
 }

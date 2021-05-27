@@ -28,7 +28,8 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -36,8 +37,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
 
@@ -51,10 +51,13 @@
         <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="TERMINAL" FontWeight="Bold" HorizontalContentAlignment="Center"/>
         <Label Grid.Row="5" Grid.Column="1" Content="PC text color:" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
         <Label Grid.Row="6" Grid.Column="1" Content="Recieved text color:" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-        <Button x:Name="btnFont" Click="btnFont_Click" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Content="Font" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" Margin="60, 5" BorderThickness="2" />
+        <Label Grid.Row="7" Grid.Column="1" Content="Font Size" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+        <Label Grid.Row="8" Grid.Column="1" Content="Font Bold" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+
         <mah:ColorPicker x:Name="terminalColorPC" DropDownClosed="terminalColorPC_DropDownClosed"  Grid.Row="5" Grid.Column="2" />
         <mah:ColorPicker x:Name="terminalColorRec" DropDownClosed="terminalColorRec_DropDownClosed"  Grid.Row="6" Grid.Column="2" />
-        
+        <TextBox x:Name="tbFontSize" Grid.Row="7" Grid.Column="2" BorderThickness="1" Margin="0,2,0,2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="39" />
+        <CheckBox x:Name="cbBold"  Grid.Row="8" Grid.Column="2"  />
 
         <Button x:Name="Close" Click="Close_Click"  Grid.Row="16" Grid.Column="1" Content="Close"/>
 

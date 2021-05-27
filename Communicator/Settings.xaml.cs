@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace Communicator
 {
@@ -41,13 +43,34 @@ namespace Communicator
 
             terminalColorPC.SelectedColor = mainWindow.Terminal_Color_PC;
             terminalColorRec.SelectedColor = mainWindow.Terminal_Color_Rec;
-
+            tbFontSize.Text = mainWindow.terminalFontSize.ToString();
+            cbBold.IsChecked = mainWindow.terminalFontBold;
 
             ThemeManager.Current.ChangeTheme(this, themeMode.Text + "." + themeColor.Text);
         }        
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
+            float.TryParse(tbFontSize.Text, out mainWindow.terminalFontSize);
+            mainWindow.Terminal.FontSize = mainWindow.terminalFontSize;
+
+            mainWindow.terminalFontBold = (bool)cbBold.IsChecked;
+            if (mainWindow.terminalFontBold) { mainWindow.Terminal.FontWeight = FontWeights.Bold; } else { mainWindow.Terminal.FontWeight = FontWeights.Normal; }
+
+            DataGeneralSettings newSettings = new DataGeneralSettings();
+
+            newSettings.terminalFontBold = (bool)cbBold.IsChecked;
+            float temp;
+            float.TryParse(tbFontSize.Text, out temp);
+            newSettings.terminalFontSize = temp;
+            newSettings.Terminal_Color_PC = mainWindow.Terminal_Color_PC;
+            newSettings.Terminal_Color_Rec = mainWindow.Terminal_Color_Rec;
+            newSettings.themeMode = themeMode.Text;
+            newSettings.themeColor = themeColor.Text;
+
+            XmlManager xmlManager = new XmlManager();
+            xmlManager.XmlDataWriter(newSettings, AppDomain.CurrentDomain.BaseDirectory + @"\Configuration\AppSettings.xml");
+
             this.Close();
         }
 
@@ -59,13 +82,6 @@ namespace Communicator
         private object FetchThemeColors()
         {
             return new string[] { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
-        }
-
-        private void themeMode_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            mainWindow.themeMode = themeMode.Text;
-            mainWindow.themeColor = themeColor.Text;
-            ThemeManager.Current.ChangeTheme(this, themeMode.Text + "." + themeColor.Text);
         }
 
         private void themeMode_DropDownClosed(object sender, EventArgs e)
@@ -96,20 +112,5 @@ namespace Communicator
             mainWindow.Terminal_Color_Rec = temp.SelectedColor;
         }
 
-        private void btnFont_Click(object sender, RoutedEventArgs e)
-        {
-            var fontDialog = new FontDialog();
-
-            var result = fontDialog.ShowDialog();
-
-            if(System.Windows.Forms.DialogResult.OK == result)
-            {
-                System.Drawing.Font selectedFont = fontDialog.Font;
-                
-                mainWindow.Terminal.FontSize = selectedFont.Size;
-                mainWindow.terminalFontSize = selectedFont.Size;
-            }
-
-        }
     }
 }
