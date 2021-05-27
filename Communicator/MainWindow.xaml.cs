@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Communicator
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        static SerialPort _serialPort;
 
         public MainWindow()
         {
@@ -125,6 +127,16 @@ namespace Communicator
         {
             Terminal.SelectAll();
             Terminal.Selection.Text = "";
+        }
+
+        private void btnOpenConnection_Click(object sender, RoutedEventArgs e)
+        {
+            //_serialPort.PortName = SetPortName("COM4");
+            //_serialPort.BaudRate = SetPortBaudRate(tbBaud.Text);
+            //_serialPort.Parity = SetPortParity(tbParitity.Text);
+            //_serialPort.DataBits = SetPortDataBits(tbDataBits.Text);
+            //_serialPort.StopBits = SetPortStopBits(tbStopBits.Text);
+            //_serialPort.Handshake = SetPortHandshake(tbHandshake.Text);
         }
     }
 }

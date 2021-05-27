@@ -47,7 +47,7 @@
         <Button x:Name="btnSettings" Click="btnSettings_Click"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Settings" Margin="5"/>
         <Button x:Name="btnSave" Click="btnSave_Click" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Content="Save As.." Margin="5"/>
         <Button x:Name="btnClear" Click="btnClear_Click"  Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Content="Clear" Margin="5"/>
-        <Button x:Name="btnOpenConnection" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Content="Open Connection" Background="LightSalmon" Margin="5"/>
+        <Button x:Name="btnOpenConnection" Click="btnOpenConnection_Click" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="2" Content="Open Connection" Background="LightSalmon" Margin="5"/>
         <Button x:Name="btnSend" Click="btnSend_Click" Grid.Column="11" Grid.Row="16" Content="Send" Margin="5"/>
 
         <Label Grid.Row="6" Grid.Column="1" Content="Port:" HorizontalAlignment="Right"/>
@@ -62,13 +62,13 @@
         <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Content="Connection settings" FontWeight="Heavy" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
         <mah:DropDownButton Grid.Row="6"  Margin="3"  Grid.Column="2" />
         
-        <TextBox Grid.Row="8"  Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="9"  Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="10"  Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="11"  Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="12" Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="13" Margin="3"  Grid.Column="2" />
-        <TextBox Grid.Row="14" Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbBaud" Grid.Row="8"  Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbParitity" Grid.Row="9"  Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbDataBits" Grid.Row="10"  Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbStopBits" Grid.Row="11"  Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbHandshake" Grid.Row="12" Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbTimeout" Grid.Row="13" Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbSpecial" Grid.Row="14" Margin="3"  Grid.Column="2" />
 
         <TextBox x:Name="tbSend" KeyDown="tbSend_KeyDown"  Grid.Column="3" Grid.Row="16" Grid.ColumnSpan="8" Margin="5"/>
         <RichTextBox x:Name="Terminal" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="9" Grid.RowSpan="15" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5"/>
