@@ -28,8 +28,7 @@ namespace Communicator
     public partial class MainWindow : MetroWindow
     {
         static SerialPort _serialPort;
-        bool _continue = false;
-        delegate void readOperation();
+        string recieved_data;
 
         public MainWindow()
         {
@@ -37,10 +36,10 @@ namespace Communicator
 
             LoadSettings();
             Terminal.FontSize = terminalFontSize;
-            if (terminalFontBold) { Terminal.FontWeight = FontWeights.Bold; } else { Terminal.FontWeight = FontWeights.Normal; }            
+            if (terminalFontBold) { Terminal.FontWeight = FontWeights.Bold; } else { Terminal.FontWeight = FontWeights.Normal; }
             ThemeManager.Current.ChangeTheme(this, themeMode + "." + themeColor);
             _serialPort = new SerialPort();
-                       
+
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
@@ -49,7 +48,7 @@ namespace Communicator
             var settings = window.ShowDialog();
 
         }
-      
+
 
         private void LoadSettings()
         {
@@ -85,13 +84,13 @@ namespace Communicator
             }
 
             tbParitity.Items.Add("None"); tbParitity.Items.Add("Even"); tbParitity.Items.Add("Odd"); tbParitity.Items.Add("Space"); tbParitity.Items.Add("Mark");
-            tbStopBits.Items.Add("None"); tbStopBits.Items.Add("1"); tbStopBits.Items.Add("1.5"); tbStopBits.Items.Add("2");
+            tbStopBits.Items.Add("1"); tbStopBits.Items.Add("1.5"); tbStopBits.Items.Add("2");
             tbHandshake.Items.Add("None"); tbHandshake.Items.Add("RTS"); tbHandshake.Items.Add("RTS XON/XOFF"); tbHandshake.Items.Add("XON/XOFF");
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            
+
             SaveFileDialog saveFile = new SaveFileDialog();
             TextRange range;
             StreamWriter writer;
@@ -110,7 +109,7 @@ namespace Communicator
 
             bool? result = saveFile.ShowDialog();
 
-            if(result != null && result == true)
+            if (result != null && result == true)
             {
                 writer = new StreamWriter(saveFile.FileName);
                 writer.Write(testi);
@@ -120,7 +119,7 @@ namespace Communicator
 
         private void tbSend_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Return)
+            if (e.Key == Key.Return)
             {
                 CommunicateOut();
             }
@@ -134,8 +133,37 @@ namespace Communicator
         private void CommunicateOut()
         {
             Terminal.AppendText(">> " + tbSend.Text + "\r", Terminal_Color_PC.ToString());
+            SerialCmdSend(tbSend.Text);
             tbSend.Clear();
             tbSend.Focus();
+
+            
+        }
+
+        private void SerialCmdSend(string text)
+        {
+            if (_serialPort.IsOpen)
+            {
+                try
+                {
+                    byte[] hexstring = Encoding.ASCII.GetBytes(text);
+                    
+                    foreach (byte hexval in hexstring)
+                    {
+                        byte[] _hexval = new byte[] { hexval }; // need to convert byte to byte[] to write
+                        _serialPort.Write(_hexval, 0, 1);
+                        Thread.Sleep(1);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Terminal.AppendText("---ERROR IN SENDING---\r", "Red");
+                }
+            }
+            else
+            {
+                Terminal.AppendText("---CONNECTION IS NOT OPEN---\r", "Red");
+            }
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
@@ -145,11 +173,11 @@ namespace Communicator
         }
 
         private void btnOpenConnection_Click(object sender, RoutedEventArgs e)
-        {            
+        {
 
             if (!_serialPort.IsOpen)
             {
-                
+
                 _serialPort.PortName = tbPorts.SelectedValue.ToString();
                 _serialPort.BaudRate = Int32.Parse(tbBaud.Text);
                 _serialPort.ReadTimeout = 500;
@@ -177,9 +205,6 @@ namespace Communicator
 
                 switch (tbStopBits.Text)
                 {
-                    case "None":
-                        _serialPort.StopBits = StopBits.None;
-                        break;
                     case "1":
                         _serialPort.StopBits = StopBits.One;
                         break;
@@ -211,46 +236,46 @@ namespace Communicator
 
                 _serialPort.Open();
 
-                readOperation work = delegate
-                {
-                    ReadSerialPort();
-                };
+                _serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(Recieve);
 
-                _continue = true;
 
-                DispatcherOperation op = Dispatcher.BeginInvoke(work);
+                var converter = new System.Windows.Media.BrushConverter();
+                var brush = (Brush)converter.ConvertFromString("#90EE90");                
+
+                btnOpenConnection.Content = "Close connection";                
+                btnOpenConnection.Background = brush;
+
             }
             else
             {
-                _continue = false;
+                var converter = new System.Windows.Media.BrushConverter();
+                var brush = (Brush)converter.ConvertFromString("#FFFFA07A");
+
+                btnOpenConnection.Content = "Open connection";
+                btnOpenConnection.Background = brush;
                 _serialPort.Close();
             }
 
         }
 
-
-        private void ReadSerialPort()
+        private delegate void UpdateUiTextDelegate(string text);
+        private void Recieve(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            while (_continue)
-            {
-                try
-                {
-                    string message = _serialPort.ReadLine();
-                    Terminal.AppendText("<< " + message + "\r");
-                }
-                catch
-                {
-
-                }
-            }
+            recieved_data = _serialPort.ReadExisting();
+            Dispatcher.Invoke(DispatcherPriority.Send, new UpdateUiTextDelegate(WriteData), recieved_data);
         }
+        private void WriteData(string text)
+        {
+            Terminal.AppendText("<< " + text + "\r", Terminal_Color_Rec.ToString());
+        }
+
 
         private void ClosePort(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (_serialPort.IsOpen)
             {
                 _serialPort.Close();
-            }            
+            }
         }
     }
 }
