@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,8 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-
+using System.Windows.Threading;
 
 namespace Communicator
 {
@@ -28,6 +28,8 @@ namespace Communicator
     public partial class MainWindow : MetroWindow
     {
         static SerialPort _serialPort;
+        bool _continue = false;
+        delegate void readOperation();
 
         public MainWindow()
         {
@@ -37,6 +39,8 @@ namespace Communicator
             Terminal.FontSize = terminalFontSize;
             if (terminalFontBold) { Terminal.FontWeight = FontWeights.Bold; } else { Terminal.FontWeight = FontWeights.Normal; }            
             ThemeManager.Current.ChangeTheme(this, themeMode + "." + themeColor);
+            _serialPort = new SerialPort();
+                       
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
@@ -72,6 +76,17 @@ namespace Communicator
                 terminalFontSize = 8;
                 terminalFontBold = false;
             }
+
+            string[] availablePorts = SerialPort.GetPortNames();
+
+            foreach (string port in availablePorts)
+            {
+                tbPorts.Items.Add(port);
+            }
+
+            tbParitity.Items.Add("None"); tbParitity.Items.Add("Even"); tbParitity.Items.Add("Odd"); tbParitity.Items.Add("Space"); tbParitity.Items.Add("Mark");
+            tbStopBits.Items.Add("None"); tbStopBits.Items.Add("1"); tbStopBits.Items.Add("1.5"); tbStopBits.Items.Add("2");
+            tbHandshake.Items.Add("None"); tbHandshake.Items.Add("RTS"); tbHandshake.Items.Add("RTS XON/XOFF"); tbHandshake.Items.Add("XON/XOFF");
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -130,13 +145,112 @@ namespace Communicator
         }
 
         private void btnOpenConnection_Click(object sender, RoutedEventArgs e)
+        {            
+
+            if (!_serialPort.IsOpen)
+            {
+                
+                _serialPort.PortName = tbPorts.SelectedValue.ToString();
+                _serialPort.BaudRate = Int32.Parse(tbBaud.Text);
+                _serialPort.ReadTimeout = 500;
+                _serialPort.WriteTimeout = 500;
+
+                switch (tbParitity.Text)
+                {
+
+                    case "None":
+                        _serialPort.Parity = Parity.None;
+                        break;
+                    case "Even":
+                        _serialPort.Parity = Parity.Even;
+                        break;
+                    case "Mark":
+                        _serialPort.Parity = Parity.Mark;
+                        break;
+                    case "Odd":
+                        _serialPort.Parity = Parity.Odd;
+                        break;
+                    case "Space":
+                        _serialPort.Parity = Parity.Space;
+                        break;
+                }
+
+                switch (tbStopBits.Text)
+                {
+                    case "None":
+                        _serialPort.StopBits = StopBits.None;
+                        break;
+                    case "1":
+                        _serialPort.StopBits = StopBits.One;
+                        break;
+                    case "1.5":
+                        _serialPort.StopBits = StopBits.OnePointFive;
+                        break;
+                    case "2":
+                        _serialPort.StopBits = StopBits.Two;
+                        break;
+                }
+
+                switch (tbHandshake.Text)
+                {
+                    case "None":
+                        _serialPort.Handshake = Handshake.None;
+                        break;
+                    case "RTS":
+                        _serialPort.Handshake = Handshake.RequestToSend;
+                        break;
+                    case "RTS XON/XOFF":
+                        _serialPort.Handshake = Handshake.RequestToSendXOnXOff;
+                        break;
+                    case "XON/XOFF":
+                        _serialPort.Handshake = Handshake.XOnXOff;
+                        break;
+                }
+
+                _serialPort.DataBits = Int32.Parse(tbDataBits.Text);
+
+                _serialPort.Open();
+
+                readOperation work = delegate
+                {
+                    ReadSerialPort();
+                };
+
+                _continue = true;
+
+                DispatcherOperation op = Dispatcher.BeginInvoke(work);
+            }
+            else
+            {
+                _continue = false;
+                _serialPort.Close();
+            }
+
+        }
+
+
+        private void ReadSerialPort()
         {
-            //_serialPort.PortName = SetPortName("COM4");
-            //_serialPort.BaudRate = SetPortBaudRate(tbBaud.Text);
-            //_serialPort.Parity = SetPortParity(tbParitity.Text);
-            //_serialPort.DataBits = SetPortDataBits(tbDataBits.Text);
-            //_serialPort.StopBits = SetPortStopBits(tbStopBits.Text);
-            //_serialPort.Handshake = SetPortHandshake(tbHandshake.Text);
+            while (_continue)
+            {
+                try
+                {
+                    string message = _serialPort.ReadLine();
+                    Terminal.AppendText("<< " + message + "\r");
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        private void ClosePort(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_serialPort.IsOpen)
+            {
+                _serialPort.Close();
+            }            
         }
     }
 }

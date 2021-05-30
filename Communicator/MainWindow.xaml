@@ -5,7 +5,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinHeight="450" MinWidth="800">
+        Title="MainWindow" Height="460" Width="800" MinHeight="450" MinWidth="800" Closing="ClosePort">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -30,13 +30,13 @@
             <RowDefinition Height="35"/>
             <RowDefinition Height="*" MaxHeight="100" />
             <RowDefinition Height="30"/>            
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
@@ -60,15 +60,15 @@
         <Label Grid.Row="14" Grid.Column="1" Content="Special:" HorizontalAlignment="Right"/>
 
         <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Content="Connection settings" FontWeight="Heavy" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
-        <mah:DropDownButton Grid.Row="6"  Margin="3"  Grid.Column="2" />
+        <mah:SplitButton x:Name="tbPorts" Grid.Row="6"  Margin="1" Grid.Column="2" SelectedIndex="1" />
         
-        <TextBox x:Name="tbBaud" Grid.Row="8"  Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbParitity" Grid.Row="9"  Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbDataBits" Grid.Row="10"  Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbStopBits" Grid.Row="11"  Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbHandshake" Grid.Row="12" Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbTimeout" Grid.Row="13" Margin="3"  Grid.Column="2" />
-        <TextBox x:Name="tbSpecial" Grid.Row="14" Margin="3"  Grid.Column="2" />
+        <TextBox x:Name="tbBaud" Grid.Row="8"  Margin="2"  Grid.Column="2" Text="19200" />
+        <mah:SplitButton x:Name="tbParitity" Grid.Row="9"  Margin="1"  Grid.Column="2" SelectedIndex="0" />
+        <TextBox x:Name="tbDataBits" Grid.Row="10"  Margin="2"  Grid.Column="2" Text="8" />
+        <mah:SplitButton x:Name="tbStopBits" Grid.Row="11"  Margin="1"  Grid.Column="2" SelectedIndex="0" />
+        <mah:SplitButton x:Name="tbHandshake" Grid.Row="12" Margin="1"  Grid.Column="2" SelectedIndex="0" />
+        <TextBox x:Name="tbTimeout" Grid.Row="13" Margin="2"  Grid.Column="2" />
+        <TextBox x:Name="tbSpecial" Grid.Row="14" Margin="2"  Grid.Column="2" />
 
         <TextBox x:Name="tbSend" KeyDown="tbSend_KeyDown"  Grid.Column="3" Grid.Row="16" Grid.ColumnSpan="8" Margin="5"/>
         <RichTextBox x:Name="Terminal" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="9" Grid.RowSpan="15" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5"/>
