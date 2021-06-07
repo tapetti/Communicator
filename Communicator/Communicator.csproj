@@ -69,6 +69,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Communication.cs" />
+    <Compile Include="StartUp.cs" />
     <Compile Include="XmlManager.cs" />
     <Page Include="Settings.xaml">
       <Generator>MSBuild:Compile</Generator>
