@@ -39,6 +39,19 @@ namespace Communicator
                 Terminal_Color_Rec = settings.Terminal_Color_Rec;
                 terminalFontSize = settings.terminalFontSize;
                 terminalFontBold = settings.terminalFontBold;
+
+                try
+                {
+                    tbTimeout.Text = settings.Timeout.ToString();
+                    tbBaud.Text = settings.BaudRate.ToString();
+                    tbDataBits.Text = settings.DataBits.ToString();
+                }
+                catch
+                {
+                    tbTimeout.Text = "500";
+                    tbBaud.Text = "8";
+                    tbDataBits.Text = "19200";
+                }
             }
             catch
             {

@@ -28,13 +28,6 @@ namespace Communicator
 
 
         #region Open/Close Connection
-        private void ClosePort(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (_serialPort.IsOpen)
-            {
-                _serialPort.Close();
-            }
-        }
 
         private void btnOpenConnection_Click(object sender, RoutedEventArgs e)
         {

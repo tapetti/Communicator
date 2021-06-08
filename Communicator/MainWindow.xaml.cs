@@ -98,6 +98,36 @@ namespace Communicator
             Terminal.Selection.Text = "";
         }
 
+        private void ShutDown(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_serialPort.IsOpen)
+            {
+                _serialPort.Close();
+            }
 
+            DataGeneralSettings settings = new DataGeneralSettings();
+            XmlManager reader = new XmlManager();
+            settings = reader.XmlDataSettingsReader(AppDomain.CurrentDomain.BaseDirectory + @"\Configuration\AppSettings.xml");
+
+            settings.ComPort = tbPorts.SelectedValue.ToString();            
+            settings.Parity = tbParitity.SelectedValue.ToString();
+            settings.StopBits = tbStopBits.SelectedValue.ToString();
+            settings.Handshake = tbHandshake.SelectedValue.ToString();
+
+            try
+            {
+                settings.Timeout = Int32.Parse(tbTimeout.Text);
+                settings.DataBits = Int32.Parse(tbDataBits.Text);
+                settings.BaudRate = Int32.Parse(tbBaud.Text);
+            }
+            catch
+            {
+                settings.Timeout = 500;
+                settings.DataBits = 8;
+                settings.BaudRate = 19200;
+            }
+
+            reader.XmlDataWriter(settings, AppDomain.CurrentDomain.BaseDirectory + @"\Configuration\AppSettings.xml");
+        }
     }
 }

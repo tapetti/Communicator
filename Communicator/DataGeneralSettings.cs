@@ -50,5 +50,53 @@ namespace Communicator
             get { return _terminalFontBold; }
             set { _terminalFontBold = value; }
         }
+
+        private string _comPort;
+        public string ComPort
+        {
+            get { return _comPort; }
+            set { _comPort = value; }
+        }
+
+        private int _baudRate;
+
+        public int BaudRate
+        {
+            get { return _baudRate; }
+            set { _baudRate = value; }
+        }
+
+        private string _parity;
+        public string Parity
+        {
+            get { return _parity; }
+            set { _parity = value; }
+        }
+
+        private int _dataBits;
+        public int DataBits
+        {
+            get { return _dataBits; }
+            set { _dataBits = value; }
+        }
+
+        private string _stopBits;
+        public string StopBits
+        {
+            get { return _stopBits; }
+            set { _stopBits = value; }
+        }
+        private string _handshake;
+        public string Handshake
+        {
+            get { return _handshake; }
+            set { _handshake = value; }
+        }
+        private int _timeout;
+        public int Timeout
+        {
+            get { return _timeout; }
+            set { _timeout = value; }
+        }
     }
 }
